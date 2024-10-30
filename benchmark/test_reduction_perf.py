@@ -90,6 +90,12 @@ def cross_entropy_loss_input_fn(shape, cur_dtype, device):
     yield inp, target
 
 
+def nll_loss_input_fn(shape, cur_dtype, device):
+    inp = generate_tensor_input(shape, cur_dtype, device)
+    target = torch.randint(0, shape[-1], (shape[0],), device=device)
+    yield inp, target
+
+
 def cumsum_input_fn(shape, cur_dtype, device):
     inp = generate_tensor_input(shape, cur_dtype, device)
     yield inp, 1
@@ -156,6 +162,13 @@ def masked_select_input_fn(shape, cur_dtype, device):
             masked_select_input_fn,
             FLOAT_DTYPES,
             marks=pytest.mark.masked_select,
+        ),
+        pytest.param(
+            "nll_loss",
+            torch.nn.NLLLoss,
+            nll_loss_input_fn,
+            FLOAT_DTYPES,
+            marks=pytest.mark.NLLLoss,
         ),
     ],
 )
